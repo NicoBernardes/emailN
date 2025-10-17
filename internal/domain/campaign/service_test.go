@@ -10,22 +10,30 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-type repositoryMock struct {
-	mock.Mock
-}
-
 var (
 	newCampaign = contract.NewCampaign{
 		Name:    "Teste X",
 		Content: "Body Hi!",
 		Emails:  []string{"teste1@teste.com"},
 	}
-	service = Service{}
+	service = ServiceImp{}
 )
+
+type repositoryMock struct {
+	mock.Mock
+}
 
 func (r *repositoryMock) Save(campaign *Campaign) error {
 	args := r.Called(campaign)
 	return args.Error(0)
+}
+
+func (r *repositoryMock) GetBy(id string) (*Campaign, error) {
+	args := r.Called(id)
+	if args.Error(1) != nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*Campaign), args.Error(1)
 }
 
 func (r *repositoryMock) Get() ([]Campaign, error) {
@@ -82,4 +90,35 @@ func Test_Create_ValidadeRepositorySave(t *testing.T) {
 
 	assert.True(errors.Is(err, internalerror.ErrInternal))
 
+}
+
+func Test_GetByIdReturnCampaign(t *testing.T) {
+	assert := assert.New(t)
+	campaign, _ := NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails)
+	repositoryMock := new(repositoryMock)
+
+	repositoryMock.On("GetBy", mock.MatchedBy(func(id string) bool {
+		return id == campaign.ID
+	})).Return(campaign, nil)
+
+	service.Repository = repositoryMock
+
+	campaignReturned, _ := service.GetBy(campaign.ID)
+
+	assert.Equal(campaign.ID, campaignReturned.ID)
+	assert.Equal(campaign.Name, campaignReturned.Name)
+	assert.Equal(campaign.Content, campaignReturned.Content)
+	assert.Equal(campaign.Status, campaignReturned.Status)
+}
+
+func Test_GetByIdReturnErrorWhenSomethingWrong(t *testing.T) {
+	assert := assert.New(t)
+	campaign, _ := NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails)
+	repositoryMock := new(repositoryMock)
+	repositoryMock.On("GetBy", mock.Anything).Return(nil, errors.New("Something wrong"))
+	service.Repository = repositoryMock
+
+	_, err := service.GetBy(campaign.ID)
+
+	assert.Equal(internalerror.ErrInternal.Error(), err.Error())
 }
