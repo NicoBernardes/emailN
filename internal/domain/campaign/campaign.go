@@ -8,7 +8,9 @@ import (
 )
 
 type Contact struct {
-	Email string `validate:"email"`
+	ID         string
+	Email      string `validate:"email"`
+	CampaignId string
 }
 
 type Campaign struct {
@@ -32,6 +34,7 @@ func NewCampaign(name, content string, emails []string) (*Campaign, error) {
 
 	for index, email := range emails {
 		contacts[index].Email = email
+		contacts[index].ID = xid.New().String()
 	}
 
 	campaign := &Campaign{
