@@ -8,25 +8,35 @@ import (
 )
 
 type Contact struct {
-	ID         string
-	Email      string `validate:"email"`
-	CampaignId string
+	ID         string `gorm:"size:50"`
+	Email      string `validate:"email" gorm:"size:100"`
+	CampaignId string `gorm:"size:50"`
 }
 
 type Campaign struct {
-	ID        string    `validate:"required"`
-	Name      string    `validate:"min=5,max=24"`
+	ID        string    `validate:"required" gorm:"size:50"`
+	Name      string    `validate:"min=5,max=24" gorm:"size:100"`
 	CreatedOn time.Time `validate:"required"`
-	Content   string    `validate:"min=5,max=1024"`
+	Content   string    `validate:"min=5,max=1024" gorm:"size:50"`
 	Contacts  []Contact `validate:"min=1,dive"` //dive to another struct
-	Status    string
+	Status    string    `gorm:"size:20"`
 }
 
 const (
-	Pending = "Pending"
-	Started = "Started"
-	Done    = "Done"
+	Pending  = "Pending"
+	Canceled = "Canceled"
+	Deleted  = "Deleted"
+	Started  = "Started"
+	Done     = "Done"
 )
+
+func (c *Campaign) Cancel() {
+	c.Status = Canceled
+}
+
+func (c *Campaign) Delete() {
+	c.Status = Deleted
+}
 
 func NewCampaign(name, content string, emails []string) (*Campaign, error) {
 
