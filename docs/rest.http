@@ -3,14 +3,14 @@ POST http://localhost:3000/campaigns
 {
     "Name": "mouse 23",
 	"Content": "change password",
-	"emails":  ["teste@teste.com.br"]
+	"emails":  ["teste@teste.com.br", "teste2@teste.com.br", "teste3@teste.com.br"]
 }
 
 ###
-GET http://localhost:3000/campaigns/d3ru2vf3bvl3ru23qf90
+GET http://localhost:3000/campaigns/d3si88f3bvl8bq50433g
 
 ###
-PATCH http://localhost:3000/campaigns/cancel/d3ru2vf3bvl3ru23qf90
+PATCH http://localhost:3000/campaigns/cancel/d3si88f3bvl8bq50433g
 
 ###
-DELETE http://localhost:3000/campaigns/delete/d3ru2vf3bvl3ru23qf90
+DELETE http://localhost:3000/campaigns/delete/d3si8hn3bvl8bq50435g
