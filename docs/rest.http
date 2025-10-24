@@ -1,16 +1,37 @@
-POST http://localhost:3000/campaigns
+@url = http://localhost:3000
+@identity_provider = http://localhost:8080
+
+###
+GET {{url}}/ping
+
+
+###
+POST {{url}}/campaigns
+Authorization: Bearer {{access_token}}
 
 {
-    "Name": "mouse 23",
+    "Name": "mouse 23000",
 	"Content": "change password",
 	"emails":  ["teste@teste.com.br", "teste2@teste.com.br", "teste3@teste.com.br"]
 }
 
 ###
-GET http://localhost:3000/campaigns/d3si88f3bvl8bq50433g
+GET {{url}}/campaigns/d3ttipn3bvl3si6b4a90
+Authorization: Bearer {{access_token}}
 
 ###
-PATCH http://localhost:3000/campaigns/cancel/d3si88f3bvl8bq50433g
+PATCH {{url}}/campaigns/cancel/d3si88f3bvl8bq50433g
+Authorization: Bearer {{access_token}}
+###
+DELETE {{url}}/campaigns/delete/d3si8hn3bvl8bq50435g
+Authorization: Bearer {{access_token}}
 
 ###
-DELETE http://localhost:3000/campaigns/delete/d3si8hn3bvl8bq50435g
+# @name token
+POST {{identity_provider}}/realms/provider/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=emailn_users&username=nicolasbernardes84@gmail.com&password=123456&grant_type=password
+
+###
+@access_token = {{token.response.body.access_token}}
