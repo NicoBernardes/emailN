@@ -2,6 +2,7 @@ package endpoints
 
 import (
 	"bytes"
+	"context"
 	"emailn/internal/domain/campaign/contract"
 	internalmock "emailn/internal/test/internal-mock"
 	"encoding/json"
@@ -35,8 +36,10 @@ func Test_CampaignsPost_should_save_new_campaign(t *testing.T) {
 	var buf bytes.Buffer
 	json.NewEncoder(&buf).Encode(body)
 	req, _ := http.NewRequest("POST", "/", &buf)
+	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
-
+	ctx := context.WithValue(req.Context(), "email", "teste@teste.com")
+	req = req.WithContext(ctx)
 	_, status, err := handler.CampaignPost(rr, req)
 
 	assert.Equal(201, status)
