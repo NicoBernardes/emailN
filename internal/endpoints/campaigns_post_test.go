@@ -15,8 +15,21 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
+func setup(body contract.NewCampaign, createdByExpected string) (*http.Request, *httptest.ResponseRecorder) {
+	var buf bytes.Buffer
+	json.NewEncoder(&buf).Encode(body)
+	req, _ := http.NewRequest("POST", "/", &buf)
+	req.Header.Set("Content-Type", "application/json")
+	rr := httptest.NewRecorder()
+	ctx := context.WithValue(req.Context(), "email", createdByExpected)
+	req = req.WithContext(ctx)
+
+	return req, rr
+}
+
 func Test_CampaignsPost_should_save_new_campaign(t *testing.T) {
 	assert := assert.New(t)
+	createdByExpected := "teste1@teste.com"
 	body := contract.NewCampaign{
 		Name:    "teste",
 		Content: "Hi everyone",
@@ -24,7 +37,9 @@ func Test_CampaignsPost_should_save_new_campaign(t *testing.T) {
 	}
 	service := new(internalmock.CampaignServiceMock)
 	service.On("Create", mock.MatchedBy(func(request contract.NewCampaign) bool {
-		if request.Name == body.Name && request.Content == body.Content {
+		if request.Name == body.Name &&
+			request.Content == body.Content && request.CreatedBy == createdByExpected {
+
 			return true
 		} else {
 			return false
@@ -33,13 +48,7 @@ func Test_CampaignsPost_should_save_new_campaign(t *testing.T) {
 
 	handler := Handler{CampaignService: service}
 
-	var buf bytes.Buffer
-	json.NewEncoder(&buf).Encode(body)
-	req, _ := http.NewRequest("POST", "/", &buf)
-	req.Header.Set("Content-Type", "application/json")
-	rr := httptest.NewRecorder()
-	ctx := context.WithValue(req.Context(), "email", "teste@teste.com")
-	req = req.WithContext(ctx)
+	req, rr := setup(body, createdByExpected)
 	_, status, err := handler.CampaignPost(rr, req)
 
 	assert.Equal(201, status)
@@ -57,11 +66,10 @@ func Test_CampaignsPost_should_inform_error_when_exists(t *testing.T) {
 	service.On("Create", mock.Anything).Return("", fmt.Errorf("error"))
 
 	handler := Handler{CampaignService: service}
+	req, rr := setup(body, "teste@teste.com")
 
 	var buf bytes.Buffer
 	json.NewEncoder(&buf).Encode(body)
-	req, _ := http.NewRequest("POST", "/", &buf)
-	rr := httptest.NewRecorder()
 
 	_, _, err := handler.CampaignPost(rr, req)
 
