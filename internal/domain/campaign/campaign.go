@@ -31,6 +31,10 @@ const (
 	Done     = "Done"
 )
 
+func (c *Campaign) Done() {
+	c.Status = Done
+}
+
 func (c *Campaign) Cancel() {
 	c.Status = Canceled
 }
