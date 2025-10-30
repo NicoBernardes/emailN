@@ -25,4 +25,5 @@ func SendMail(campaign *campaign.Campaign) error {
 	m.SetBody("text/html", campaign.Content)
 
 	return d.DialAndSend(m)
+
 }

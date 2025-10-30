@@ -12,7 +12,7 @@ POST {{url}}/campaigns
 Authorization: Bearer {{access_token}}
 
 {
-    "Name": "change",
+    "Name": "Campanha criada",
 	"Content": "change password",
 	"emails":  ["nicolasbernardes84@gmail.com", "teste2@teste.com.br", "teste3@teste.com.br"]
 }
