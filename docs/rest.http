@@ -1,29 +1,35 @@
 @url = http://localhost:3000
 @identity_provider = http://localhost:8080
+@campaign_id = {{campaign_create.response.body.id}}
 
 ###
 GET {{url}}/ping
 
 
 ###
+# @name campaign_create
 POST {{url}}/campaigns
 Authorization: Bearer {{access_token}}
 
 {
-    "Name": "mouse 23000",
+    "Name": "change",
 	"Content": "change password",
-	"emails":  ["teste@teste.com.br", "teste2@teste.com.br", "teste3@teste.com.br"]
+	"emails":  ["nicolasbernardes84@gmail.com", "teste2@teste.com.br", "teste3@teste.com.br"]
 }
 
 ###
-GET {{url}}/campaigns/d3ttipn3bvl3si6b4a90
+GET {{url}}/campaigns/{{campaign_id}}
 Authorization: Bearer {{access_token}}
 
 ###
-PATCH {{url}}/campaigns/cancel/d3si88f3bvl8bq50433g
+PATCH {{url}}/campaigns/cancel/{{campaign_id}}
 Authorization: Bearer {{access_token}}
 ###
-DELETE {{url}}/campaigns/delete/d3si8hn3bvl8bq50435g
+PATCH {{url}}/campaigns/start/{{campaign_id}}
+Authorization: Bearer {{access_token}}
+
+###
+DELETE {{url}}/campaigns/delete/{{campaign_id}}
 Authorization: Bearer {{access_token}}
 
 ###

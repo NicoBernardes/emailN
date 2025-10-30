@@ -21,8 +21,8 @@ func SendMail(campaign *campaign.Campaign) error {
 	m := gomail.NewMessage()
 	m.SetHeader("From", os.Getenv("EMAIL_USER"))
 	m.SetHeader("To", emails...)
-	m.SetHeader("Subject", "Hello!")
-	m.SetBody("text/html", "Hello <b>Nicolas</b>!")
+	m.SetHeader("Subject", campaign.Name)
+	m.SetBody("text/html", campaign.Content)
 
 	return d.DialAndSend(m)
 }
