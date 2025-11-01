@@ -79,15 +79,15 @@ func (s *ServiceImp) Start(id string) error {
 		return internalerror.ProcessErrorToReturn(err)
 	}
 
-	go func() {
-		err = s.SendMail(campaignSaved)
-		if err != nil {
-			campaignSaved.Fail()
-		} else {
-			campaignSaved.Done()
-		}
-		s.Repository.Update(campaignSaved)
-	}()
+	// go func() {
+	// 	err = s.SendMail(campaignSaved)
+	// 	if err != nil {
+	// 		campaignSaved.Fail()
+	// 	} else {
+	// 		campaignSaved.Done()
+	// 	}
+	// 	s.Repository.Update(campaignSaved)
+	// }()
 
 	campaignSaved.Started()
 	err = s.Repository.Update(campaignSaved)
