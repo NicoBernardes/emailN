@@ -40,7 +40,7 @@ func (c *CampaignRepository) Delete(campaign *campaign.Campaign) error {
 
 func (c *CampaignRepository) GetCampaignsToBeSent() ([]campaign.Campaign, error) {
 	var campaigns []campaign.Campaign
-	tx := c.Db.Preload("Contacts").Find(&campaigns, "status = ? and date_part('minute', now()::tiimestamp - updated_on::timestamp) > 1",
-		campaign.Started)
+	tx := c.Db.Preload("Contacts").Find(&campaigns, "status = ? and date_part('minute', now()::timestamp - updated_on::timestamp) >= ?",
+		campaign.Started, 1)
 	return campaigns, tx.Error
 }
