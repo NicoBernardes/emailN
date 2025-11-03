@@ -36,10 +36,6 @@ func setUpGetByIdRepositoryBy(campaign *campaign.Campaign) {
 	repositoryMock.On("GetBy", mock.Anything).Return(campaign, nil)
 }
 
-func setUpUpdateRepository(err error) {
-	repositoryMock.On("Update", mock.Anything).Return(err)
-}
-
 func setUpSendEmail(err error) {
 	sendMail := func(campaign *campaign.Campaign) error {
 		return err
