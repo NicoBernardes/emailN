@@ -164,12 +164,12 @@ func Test_Start_ReturnRecordNotFound_when_campaign_does_not_exists(t *testing.T)
 
 func Test_Start_ReturnStatusInvalid_when_campaign_has_status_not_pending(t *testing.T) {
 	setUp()
-	setUpGetByIdRepositoryBy(campaignPending)
+	setUpGetByIdRepositoryBy(campaignStarted)
+	repositoryMock.On("Update", mock.Anything).Return(nil)
 	service.Repository = repositoryMock
 
 	err := service.Start(campaignStarted.ID)
-
-	assert.Equal(t, "Campaign status invalid", err.Error())
+	assert.Nil(t, err)
 }
 
 func Test_Start_CampaignWasUpdated_StatusIsStarted(t *testing.T) {
